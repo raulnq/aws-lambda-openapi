@@ -1,0 +1,118 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  SAM Template
+
+Globals:
+  Function:
+    Timeout: 30
+    MemorySize: 512
+    Architectures:
+      - x86_64
+    Environment:
+      Variables:
+        TABLE_NAME:
+          Ref: DynamoTable
+
+Resources:
+  DynamoTable:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      PrimaryKey:
+        Name: petId
+        Type: String
+      TableName: petstable
+
+  ApiGatewayApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: petsapi
+      StageName: Prod
+      Cors:
+        AllowMethods: "'*'"
+        AllowHeaders: "'*'"
+        AllowOrigin: "'*'"
+      OpenApiVersion: '3.0.1'
+
+  RegisterFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Runtime: dotnet6
+      Handler: PetsApi::PetsApi.Function::Register
+      CodeUri: ./src/PetsApi/
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName:
+              Ref: DynamoTable
+      Events:
+        RegisterPet:
+          Type: Api
+          Properties:
+            Path: /pets
+            Method: post
+            RestApiId:
+              Ref: ApiGatewayApi
+
+  GetFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Runtime: dotnet6
+      Handler: PetsApi::PetsApi.Function::Get
+      CodeUri: ./src/PetsApi/
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName:
+              Ref: DynamoTable
+      Events:
+        GetPet:
+          Type: Api
+          Properties:
+            Path: /pets/{petId}
+            Method: get
+            RestApiId:
+              Ref: ApiGatewayApi
+
+  ListFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Runtime: dotnet6
+      Handler: PetsApi::PetsApi.Function::List
+      CodeUri: ./src/PetsApi/
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName:
+              Ref: DynamoTable
+      Events:
+        ListPet:
+          Type: Api
+          Properties:
+            Path: /pets
+            Method: get
+            RestApiId:
+              Ref: ApiGatewayApi
+
+  EditFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Runtime: dotnet6
+      Handler: PetsApi::PetsApi.Function::Edit
+      CodeUri: ./src/PetsApi/
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName:
+              Ref: DynamoTable
+      Events:
+        EditPet:
+          Type: Api
+          Properties:
+            Path: /pets/{petId}
+            Method: put
+            RestApiId:
+              Ref: ApiGatewayApi
+
+
+Outputs:
+  PetsApi:
+    Description: "API Gateway endpoint URL"
+    Value: 
+      Fn::Sub: "https://${ApiGatewayApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/pets/"

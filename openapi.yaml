@@ -1,0 +1,113 @@
+openapi: "3.0.1"
+info:
+  title: "petsapi"
+  version: "1.0"
+paths:
+  /pets:
+    get:
+      summary: List pets
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArrayOfPet' 
+    post:
+      summary: Register pet
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterPetRequest'
+        required: true
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterPetResponse' 
+  /pets/{petId}:
+    get:
+      summary: Get pet
+      parameters:
+      - name: "petId"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pet'
+        400:
+          description: Not found
+    put:
+      summary: Edit pet
+      parameters:
+      - name: "petId"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditPetRequest'
+        required: true
+      responses:
+        200:
+          description: Successful operation
+        400:
+          description: Not found
+components:
+  schemas:
+    ArrayOfPet:
+      type: "array"
+      items:
+        $ref: "#/components/schemas/Pet"
+    RegisterPetRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        name:
+          type: string
+      required:
+        - type
+        - name
+    RegisterPetResponse:
+      type: object
+      properties:
+        petId:
+          type: string
+      required:
+        - petId
+    EditPetRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        name:
+          type: string
+      required:
+        - name
+        - type
+    Pet:
+      type: object
+      properties:
+        petId:
+          type: string
+        type:
+          type: string
+        name:
+          type: string
+      required:
+        - petId
+        - type
+        - name
