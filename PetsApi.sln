@@ -8,6 +8,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7800F197-6C9E-4155-86D8-BB4A282EC768}"
 	ProjectSection(SolutionItems) = preProject
 		openapi.yaml = openapi.yaml
+		openapi_with_extensions.yaml = openapi_with_extensions.yaml
 		template.yaml = template.yaml
 	EndProjectSection
 EndProject

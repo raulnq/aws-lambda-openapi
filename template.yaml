@@ -32,6 +32,12 @@ Resources:
         AllowMethods: "'*'"
         AllowHeaders: "'*'"
         AllowOrigin: "'*'"
+      OpenApiVersion: '3.0.1'
+      DefinitionBody:
+        'Fn::Transform':
+          Name: 'AWS::Include'
+          Parameters:
+            Location: openapi_with_extensions.yaml
 
   RegisterFunction:
     Type: AWS::Serverless::Function
