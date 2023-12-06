@@ -32,7 +32,6 @@ Resources:
         AllowMethods: "'*'"
         AllowHeaders: "'*'"
         AllowOrigin: "'*'"
-      OpenApiVersion: '3.0.1'
 
   RegisterFunction:
     Type: AWS::Serverless::Function
